@@ -70,15 +70,15 @@
             class="p-4 bg-white text-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h1 class="mb-2 text-lg font-semibold">Profile</h1>
             <div>
-              <h3 class="mb-2"><span class="w-32 inline-block">Nama Toko</span> : {{ $profile['nama_toko'] }}</h3>
+              <h3 class="mb-2"><span class="w-32 inline-block">Nama Toko</span> : {{ $profile->name }}</h3>
             </div>
             <div>
               <h3 class="mb-2">
-                <span class="w-32 inline-block">Alamat</span> : {{ $profile['alamat_toko'] }}
+                <span class="w-32 inline-block">Alamat</span> : {{ $profile->adress }}
               </h3>
             </div>
             <div>
-              <h3 class="mb-2"><span class="w-32 inline-block">No Telp</span> : {{ $profile['telp'] }}</h3>
+              <h3 class="mb-2"><span class="w-32 inline-block">No Telp</span> : {{ $profile->contact }}</h3>
             </div>
           </div>
         </div>

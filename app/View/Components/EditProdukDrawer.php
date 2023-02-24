@@ -24,6 +24,6 @@ class EditProdukDrawer extends Component
      */
     public function render()
     {
-        return view('components.edit-produk-drawer');
+        return response(view('components.edit-produk-drawer'));
     }
 }

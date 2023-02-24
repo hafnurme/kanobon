@@ -2,7 +2,7 @@
 
 namespace App\View\Components;
 
-use App\Models\TransaksiModel;
+use App\Models\Order;
 use Illuminate\View\Component;
 
 class BayarModal extends Component
@@ -24,6 +24,6 @@ class BayarModal extends Component
      */
     public function render()
     {
-        return view('components.bayar-modal')->with('penjualan', TransaksiModel::all());
+        return response(view('components.bayar-modal')->with('penjualan', Order::all()));
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\LaporanPenjualanExport;
 use App\Models\DetailPenjualan;
-use App\Models\DetailTransaksiModel;
+use App\Models\DetailOrder;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -21,7 +21,7 @@ class LaporanPenjualan extends Controller
      */
     public function index()
     {
-        $data_laporan = DetailTransaksiModel::join('produk', 'detail_transaksi.id_produk', '=', 'produk.id')
+        $data_laporan = DetailOrder::join('produk', 'detail_transaksi.id_produk', '=', 'produk.id')
             ->select(
                 'produk.id',
                 'produk.nama_produk',
@@ -30,7 +30,7 @@ class LaporanPenjualan extends Controller
             )
             ->groupBy('id', 'nama_produk', 'harga_satuan')->get();
 
-        return view('laporan_penjualan')->with('title', 'Laporan Penjualan')->with('data_laporan', $data_laporan);
+        return response(view('laporan_penjualan')->with('title', 'Laporan Penjualan')->with('data_laporan', $data_laporan));
     }
 
     /**
@@ -101,7 +101,7 @@ class LaporanPenjualan extends Controller
 
     public function print($export)
     {
-        $laporan = DetailTransaksiModel::join('produk', 'detail_transaksi.id_produk', '=', 'produk.id')
+        $laporan = DetailOrder::join('produk', 'detail_transaksi.id_produk', '=', 'produk.id')
             ->select(
                 'produk.id',
                 'produk.nama_produk',

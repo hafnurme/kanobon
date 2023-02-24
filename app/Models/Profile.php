@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     use HasFactory;
-    protected $table = 'profile_config';
-    public $timestamps = false;
+    protected $table = 'profile';
+
 }

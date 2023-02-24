@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Controllers\Beranda;
-use App\Http\Controllers\Kasir;
+use App\Http\Controllers\CashierController;
 use App\Http\Controllers\LaporanPenjualan;
-use App\Http\Controllers\Produk;
 use App\Http\Controllers\RiwayatTransaksi;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,16 +16,17 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', [Kasir::class, 'index']);
-Route::post('/search', [Kasir::class, 'show']);
-Route::get('/dashboard', [Beranda::class, 'index']);
-Route::get('/produk', [Produk::class, 'index']);
-Route::post('/produk/search', [Produk::class, 'show']);
-Route::post('/produk/update/{id}', [Produk::class, 'update']);
-Route::get('/produk/{export}', [Produk::class, 'print']);
-Route::get('/tambah-produk', [Produk::class, 'create']);
-Route::post('/tambah-produk/simpan', [Produk::class, 'store']);
+Route::get('/login',[UserController::class,'login'])->name('login');
+Route::post('/auth',[UserController::class,'auth']);
+Route::get('/', [CashierController::class, 'index'])->name('dashboard');
+Route::post('/search', [CashierController::class, 'show']);
+Route::get('/dashboard', [AppController::class, 'index']);
+Route::get('/produk', [ProductController::class, 'index']);
+Route::post('/produk/search', [ProductController::class, 'show']);
+Route::post('/produk/update/{id}', [ProductController::class, 'update']);
+Route::get('/produk/{export}', [ProductController::class, 'print']);
+Route::get('/tambah-produk', [ProductController::class, 'create']);
+Route::post('/tambah-produk/simpan', [ProductController::class, 'store'])->name('add-product');;
 Route::get('/riwayat-transaksi', [RiwayatTransaksi::class, 'index']);
 Route::get('/riwayat-transaksi/{export}', [RiwayatTransaksi::class, 'export']);
 Route::post('/riwayat-transaksi/add', [RiwayatTransaksi::class, 'store']);

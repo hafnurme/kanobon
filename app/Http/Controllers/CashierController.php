@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DetailTransaksiModel;
-use App\Models\Penjualan;
-use App\Models\Produk;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use  App\Models\Profile;
-use App\Models\TransaksiModel;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
-class Beranda extends Controller
+class CashierController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,25 +15,7 @@ class Beranda extends Controller
      */
     public function index()
     {
-
-        $produk = Produk::all()->count('id');
-        $transaksi_hari_ini = TransaksiModel::whereDate('tanggal_transaksi', '=', Carbon::today()->toDateString());
-        $stok_rendah = Produk::whereRaw('stok < stok_min + 10')->get();
-        $pemasukan_hari_ini = $transaksi_hari_ini->select(DB::raw('SUM(harus_dibayar) as pemasukan'))->first();
-
-
-
-        $data_statistik = [
-            'total_produk' => $produk,
-            'transaksi_hari_ini' => $transaksi_hari_ini->count('id'),
-            'stok_rendah' => count($stok_rendah),
-            'pemasukan' => $pemasukan_hari_ini['pemasukan']
-        ];
-
-        return view('beranda')
-            ->with('title', 'Dashboard')
-            ->with('profile', Profile::find(1))->with('stok_rendah', $stok_rendah)
-            ->with('data_statistik', $data_statistik);
+        return response(view('kasir')->with('title', 'Kasir')->with('data_produk', Product::all()));
     }
 
     /**
@@ -60,7 +36,6 @@ class Beranda extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -69,9 +44,15 @@ class Beranda extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $validation = $request->validate([
+            'item' => 'required'
+        ]);
+
+        $data_produk = Product::where('nama_produk', 'like', '%' . $request->item . '%')->get();
+
+        return response(view('kasir')->with('title', 'Kasir')->with('data_produk', $data_produk));
     }
 
     /**

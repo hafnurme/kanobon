@@ -3,7 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Penjualan;
-use App\Models\TransaksiModel;
+use App\Models\Order;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -14,7 +14,7 @@ class TransaksiExport implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        return TransaksiModel::all();
+        return Order::all();
     }
 
     public function headings(): array

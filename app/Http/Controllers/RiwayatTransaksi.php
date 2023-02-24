@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exports\TransaksiExport;
 use App\Models\DetailPenjualan;
-use App\Models\DetailTransaksiModel;
-use App\Models\TransaksiModel;
+use App\Models\DetailOrder;
+use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,13 +24,13 @@ class RiwayatTransaksi extends Controller
     public function index()
     {
 
-        $list_bulan = TransaksiModel::select(DB::raw('MONTH(tanggal_transaksi) as bulan'))
+        $list_bulan = Order::select(DB::raw('MONTH(tanggal_transaksi) as bulan'))
             ->groupBy(DB::raw('MONTH(tanggal_transaksi)'))->get();
 
-        return view('riwayat_transaksi')
+        return response(view('riwayat_transaksi')
             ->with('title', 'Riwayat Transaksi')
-            ->with('data_riwayat', TransaksiModel::paginate(8))
-            ->with('list_bulan', $list_bulan);
+            ->with('data_riwayat', Order::paginate(8))
+            ->with('list_bulan', $list_bulan));
     }
 
     /**
@@ -47,7 +47,7 @@ class RiwayatTransaksi extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -80,7 +80,7 @@ class RiwayatTransaksi extends Controller
 
 
 
-        TransaksiModel::create([
+        Order::create([
             'tanggal_transaksi' => $date_now,
             'kode_transaksi' => $kode_transaksi,
             'harus_dibayar' => $request->harus_dibayar,
@@ -88,7 +88,7 @@ class RiwayatTransaksi extends Controller
             'kembalian' => $request->kembalian
         ]);
 
-        DetailTransaksiModel::insert($data_detail_penjualan);
+        DetailOrder::insert($data_detail_penjualan);
 
         return response()->json([
             'data' => $data_detail_penjualan,
@@ -141,7 +141,7 @@ class RiwayatTransaksi extends Controller
     }
     public function export($export)
     {
-        $laporan = TransaksiModel::all();
+        $laporan = Order::all();
 
         $data = [
             'title' => 'Laporan Transaksi',

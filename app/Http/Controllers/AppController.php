@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produk;
+use App\Models\DetailOrder;
+use App\Models\Penjualan;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use  App\Models\Profile;
+use App\Models\Order;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-class Kasir extends Controller
+class AppController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +21,26 @@ class Kasir extends Controller
      */
     public function index()
     {
-        return view('kasir')->with('title', 'Kasir')->with('data_produk', Produk::all());
+
+        $produk = Product::all()->count();
+        $transaksi_hari_ini = Order::whereDate('order_date', '=', Carbon::today()->toDateString());
+        $stok_rendah = Product::where('stock','<','minimum_stock + 10')->get();
+        //$pemasukan_hari_ini = $transaksi_hari_ini->select(DB::raw('SUM(amount) as pemasukan'))->first();
+
+
+
+        $data_statistik = [
+            'total_produk' => $produk,
+            'transaksi_hari_ini' => $transaksi_hari_ini->count('order_id'),
+            'stok_rendah' => count($stok_rendah),
+            //'pemasukan' => $pemasukan_hari_ini['pemasukan']
+            'pemasukan'=>'lorem'
+        ];
+      
+        return response(view('beranda')
+            ->with('title', 'Dashboard')
+            ->with('profile', Profile::all())->with('stok_rendah', $stok_rendah)
+            ->with('data_statistik', $data_statistik));
     }
 
     /**
@@ -36,6 +61,7 @@ class Kasir extends Controller
      */
     public function store(Request $request)
     {
+        //
     }
 
     /**
@@ -44,19 +70,9 @@ class Kasir extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show($id)
     {
-        $validation = $request->validate([
-            'item' => 'required'
-        ]);
-
-        $data_produk = Produk::where('nama_produk', 'like', '%' . $request->item . '%')->get();
-
-        if (!$validation) {
-            return redirect('/');
-        }
-
-        return view('kasir')->with('title', 'Kasir')->with('data_produk', $data_produk);
+        //
     }
 
     /**

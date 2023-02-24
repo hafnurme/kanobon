@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\DetailTransaksiModel;
+use App\Models\DetailOrder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,7 +14,7 @@ class LaporanPenjualanExport implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        return DetailTransaksiModel::join('produk', 'detail_transaksi.id_produk', '=', 'produk.id')
+        return DetailOrder::join('produk', 'detail_transaksi.id_produk', '=', 'produk.id')
             ->select(
                 'produk.nama_produk',
                 DB::raw('SUM(jumlah) as jumlah_terjual'),

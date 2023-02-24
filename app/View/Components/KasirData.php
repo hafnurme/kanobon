@@ -23,6 +23,6 @@ class KasirData extends Component
      */
     public function render()
     {
-        return view('components.kasir-data');
+        return response(view('components.kasir-data'));
     }
 }
