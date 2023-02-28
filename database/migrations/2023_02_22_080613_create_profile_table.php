@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('branch_id');
             $table->string('name');
             $table->string('leader_name');
-            $table->string('contact',12);
+            $table->string('contact',20);
             $table->string('email');
             $table->string('adress'); 
             $table->timestamps();

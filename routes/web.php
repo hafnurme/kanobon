@@ -4,6 +4,8 @@ use App\Http\Controllers\CashierController;
 use App\Http\Controllers\LaporanPenjualan;
 use App\Http\Controllers\RiwayatTransaksi;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AppController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,10 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/login',[UserController::class,'login'])->name('login');
 Route::post('/auth',[UserController::class,'auth']);
-Route::get('/', [CashierController::class, 'index'])->name('dashboard');
+Route::get('/', [CashierController::class, 'index'])->middleware('auth');
 Route::post('/search', [CashierController::class, 'show']);
-Route::get('/dashboard', [AppController::class, 'index']);
-Route::get('/produk', [ProductController::class, 'index']);
+Route::get('/dashboard', [AppController::class, 'index'])->middleware('auth')->name('dashboard');
+Route::get('/produk', [ProductController::class, 'index'])->middleware('auth');
 Route::post('/produk/search', [ProductController::class, 'show']);
 Route::post('/produk/update/{id}', [ProductController::class, 'update']);
 Route::get('/produk/{export}', [ProductController::class, 'print']);

@@ -39,7 +39,7 @@ class AppController extends Controller
       
         return response(view('beranda')
             ->with('title', 'Dashboard')
-            ->with('profile', Profile::all())->with('stok_rendah', $stok_rendah)
+            ->with('profile', Profile::get()->first())->with('stok_rendah', $stok_rendah)
             ->with('data_statistik', $data_statistik));
     }
 

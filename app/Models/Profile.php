@@ -9,5 +9,12 @@ class Profile extends Model
 {
     use HasFactory;
     protected $table = 'profile';
-
+    protected $fillable = [
+        'branch_id',
+        'name',
+        'leader_name',
+        'contact',
+        'email',
+        'adress'
+    ];
 }

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
@@ -84,7 +86,7 @@ class ProductController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|null
      */
     public function edit($id)
     {
@@ -123,7 +125,7 @@ class ProductController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|null
      */
     public function destroy($id)
     {
@@ -150,4 +152,40 @@ class ProductController extends Controller
         if ($export == 'download_excel') {
             return Excel::download(new ProdukExport, 'produk.xlsx');
         }
-    }}
+    }
+    /**
+     * Sync product table to database
+     *
+     * @param  Request $response
+     * @return \Illuminate\Http\Response|null
+     */
+    public function sync(Request $request)
+    {
+        if (Auth::user()->role != 'admin') {
+            return response('unauthorized');
+        }
+        $token = $request->session()->get('token');
+        $prd = Http::withToken('token')->get(env('API_URL') . 'product');
+        if ($prd->ok()) {
+            $data = $prd->object();
+            foreach ($data as $p) {
+                Product::create([
+                    'product_id' => $p->product_id,
+                    'product_code' => $p->product_code,
+                    'brand' => $p->brand,
+                    'name' => $p->name,
+                    'category_id' => $p->category_id,
+                    'buy_price' => $p->buy_price,
+                    'price_rec' => $p->price_rec,
+                    'price_rec_from_sup' => $p->price_rec_from_sup,
+                    'profit_margin' => $p->profit_margin,
+                    'stock' => $p->stock,
+                    'minimum_stock' => $p->minimum_stock,
+                    'description' => $p->description,
+                    'property' => $p->property,
+                ]);
+            }
+            return response('ok');
+        }
+    }
+}
